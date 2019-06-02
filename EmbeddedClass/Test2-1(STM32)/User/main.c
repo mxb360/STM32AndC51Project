@@ -22,7 +22,6 @@ void send_square_wave(uint frq)
 
 void set_frq(uint src_frq, int err_frq, uint *frq)
 {    
-    char buf[40];
     const char *str;
     uint v;
     
@@ -36,8 +35,7 @@ void set_frq(uint src_frq, int err_frq, uint *frq)
     *frq = src_frq + err_frq;
     send_square_wave(*frq);
 
-    sprintf(buf, "%s %uHz; current %uHz\r\n", str, v, *frq);
-    usart_send_string(buf);
+    printf("%s %uHz; current %uHz\r\n", str, v, *frq);
 }
     
 #define have_cmd(cmd) !strcmp(usart_buf, cmd)
@@ -59,14 +57,14 @@ int main(void)
                 if (frq + 100 <= 2000)
                     set_frq(frq, 100, &frq);
                 else
-                    usart_send_string("frq out of range\r\n");
+                    printf("frq out of range\r\n");
             }       
             else if (have_cmd("B"))
             {
                 if (frq - 100 >= 500)
                     set_frq(frq, -100, &frq);
                 else
-                    usart_send_string("frq out of range\r\n");
+                    printf("frq out of range\r\n");
             }
             else if (have_cmd("C"))
                 set_frq(1000, 0, &frq);
@@ -79,7 +77,7 @@ int main(void)
             else if (have_cmd("G"))
                 set_frq(300, 0, &frq);
             else
-                usart_send_string("unknown cmd\r\n");
+                printf("unknown cmd\r\n");
             cmd_ok = 0;
         }
     }

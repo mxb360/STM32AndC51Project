@@ -139,7 +139,7 @@ void DEBUG_USART_IRQHandler(void)
     uint8_t res;
     static uint8_t top;
 
-    if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET) 
+    if(USART_GetITStatus(DEBUG_USARTx, USART_IT_RXNE) != RESET) 
     {
         res =USART_ReceiveData(USART1);
         if (cmd_ok)
@@ -158,4 +158,12 @@ void DEBUG_USART_IRQHandler(void)
         else
             usart_buf[top++] = res;
     } 
+}
+
+int fputc(int ch, FILE *f)
+{
+    USART_SendData(DEBUG_USARTx, (uint8_t) ch);
+    while (USART_GetFlagStatus(DEBUG_USARTx, USART_FLAG_TXE) == RESET);		
+
+    return (ch);
 }
