@@ -25,6 +25,5 @@ del *.sct /s
 del *.map /s
 
 del *.uvgui* /s
-ded *.m51 /s
+del *.m51 /s
 
-exit
