@@ -43,10 +43,10 @@ static void BASIC_TIM_Mode_Config_1(void)
     BASIC_TIM_APBxClock_FUN1(BASIC_TIM_CLK1, ENABLE);
 	
 		// 自动重装载寄存器的值，累计TIM_Period+1个频率后产生一个更新或者中断
-    TIM_TimeBaseStructure.TIM_Period = 0;	
+    TIM_TimeBaseStructure.TIM_Period = 65535;	
 
 	  // 时钟预分频数为
-    TIM_TimeBaseStructure.TIM_Prescaler= 0;
+    TIM_TimeBaseStructure.TIM_Prescaler= 71;
 	
 		// 时钟分频因子 ，基本定时器没有，不用管
     //TIM_TimeBaseStructure.TIM_ClockDivision=TIM_CKD_DIV1;
@@ -81,7 +81,7 @@ static void BASIC_TIM_NVIC_Config_0(void)
 		// 设置主优先级为 0
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;	 
 	  // 设置抢占优先级为3
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3;	
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;	
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
 }
@@ -110,10 +110,10 @@ static void BASIC_TIM_Mode_Config_0(void)
     BASIC_TIM_APBxClock_FUN0(BASIC_TIM_CLK0, ENABLE);
 	
 		// 自动重装载寄存器的值，累计TIM_Period+1个频率后产生一个更新或者中断
-    TIM_TimeBaseStructure.TIM_Period = 0;	
+    TIM_TimeBaseStructure.TIM_Period = 65535;	
 
 	  // 时钟预分频数为
-    TIM_TimeBaseStructure.TIM_Prescaler= BASIC_TIM_Prescaler0;
+    TIM_TimeBaseStructure.TIM_Prescaler= 71;
 	
 		// 时钟分频因子 ，基本定时器没有，不用管
     //TIM_TimeBaseStructure.TIM_ClockDivision=TIM_CKD_DIV1;
@@ -159,7 +159,8 @@ void BASIC_TIM_IRQHandler0(void)
         {
             high_count = low_count = 0;
             count1 = 0;
-        }     
+        } 
+        TIM_ClearITPendingBit(BASIC_TIM0, TIM_FLAG_Update);        
 	}		 	
 }
 
@@ -171,7 +172,8 @@ void BASIC_TIM_IRQHandler1(void)
         {
             high_count = low_count = 0;
             count2 = 0;
-        }  		 
+        } 
+        TIM_ClearITPendingBit(BASIC_TIM1, TIM_FLAG_Update); 
 	}		 	
 }
 

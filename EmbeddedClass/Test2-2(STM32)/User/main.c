@@ -40,51 +40,48 @@ uint get_high(void)
 
 void cmd_resolve(void)
 {
-    char buf[20];
-    
     if (have_cmd("AA"))
-        sprintf(buf, "frq: %uHz  t: %uus high: %uus\r\n", get_frq(), get_T(), get_high());
+        printf("frq: %uHz  t: %uus high: %uus\r\n", get_frq(), get_T(), get_high());
     else if (have_cmd("A"))
     {
         uint frq = get_frq();
         
         if (frq > 1000)
-            sprintf(buf, "OVER\r\n");
+            printf("OVER\r\n");
         else
-            sprintf(buf, "%uHz\r\n", frq);
+            printf("%uHz\r\n", frq);
     }       
     else if (have_cmd("B"))
     {
         uint frq = get_frq();
         
         if (frq < 1000)
-            sprintf(buf, "LOW\r\n");
+            printf("LOW\r\n");
         else if (frq > 10000)
-            sprintf(buf, "OVER\r\n");
+            printf("OVER\r\n");
         else
-            sprintf(buf, "%gkHz\r\n", frq/1000.);
+            printf("%gkHz\r\n", frq/1000.);
     }
     else if (have_cmd("C"))
     {
         uint t = get_T();
         
         if (t > 1000)
-            sprintf(buf, "OVER\r\n");
+            printf("OVER\r\n");
         else
-            sprintf(buf, "%gms\r\n", t/1000.);
+            printf("%gms\r\n", t/1000.);
     }
     else if (have_cmd("D"))
     {
         uint t = get_high();
         
         if (t > 1000)
-            sprintf(buf, "OVER\r\n");
+            printf("OVER\r\n");
         else
-            sprintf(buf, "%gms\r\n", t/1000.);
+            printf("%gms\r\n", t/1000.);
     }
     else
-        sprintf(buf, "unknown cmd\r\n");
-    usart_send_string(buf);
+        printf("unknown cmd\r\n");
 }
 
 int main(void)
@@ -95,25 +92,27 @@ int main(void)
     timer_init();
     usart_init(9600);
     
+    printf("Counter is ready!\r\n");
+    
     while (WAVE_IN);
     while (!WAVE_IN);
     
     while (1)
     {    
-        TIM_Cmd(BASIC_TIM1, DISABLE); //TR1 = 0;
-        TIM_Cmd(BASIC_TIM0, ENABLE);  //TR0 = 1;
+        TIM_Cmd(BASIC_TIM1, DISABLE);
+        TIM_Cmd(BASIC_TIM0, ENABLE);
         while (WAVE_IN);        
-        TIM_Cmd(BASIC_TIM0, DISABLE); //TR0 = 0;
-        TIM_Cmd(BASIC_TIM1, ENABLE); //TR1 = 1;
+        TIM_Cmd(BASIC_TIM0, DISABLE);
+        TIM_Cmd(BASIC_TIM1, ENABLE);
         while (!WAVE_IN);
-        TIM_Cmd(BASIC_TIM1, DISABLE);//TR1 = 0;
-        TIM_Cmd(BASIC_TIM0, ENABLE);//TR0 = 1;
+        TIM_Cmd(BASIC_TIM1, DISABLE);
+        TIM_Cmd(BASIC_TIM0, ENABLE);
         
         if (++count == 10)
         {
             TIM_Cmd(BASIC_TIM0, DISABLE);
             TIM_Cmd(BASIC_TIM1, DISABLE);
-            //TR0 = TR1 = 0;
+
             high_count = (TIM_GetCounter(BASIC_TIM0) + count1 * 65536)/10;
             low_count  = (TIM_GetCounter(BASIC_TIM1) + count2 * 65536)/10;
             count = count1 = count2 = 0;

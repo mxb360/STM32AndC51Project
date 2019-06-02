@@ -65,8 +65,6 @@ uint get_high(void)
 
 /**********************************************/
 
-uchar usart_buf[40];
-
 void usart_init(ulong bps)
 {
     SCON = 0x50;
@@ -85,6 +83,8 @@ char putchar(char ch)
     TI = 0; 
     return ch;
 }
+
+xdata uchar usart_buf[40];
 
 void cmd_resolve()
 {
@@ -163,6 +163,8 @@ void main(void)
     
     timer_init();
     usart_init(9600);
+
+    printf("Counter is ready!\r\n");
     
     while (WAVE_IN);
     while (!WAVE_IN);
