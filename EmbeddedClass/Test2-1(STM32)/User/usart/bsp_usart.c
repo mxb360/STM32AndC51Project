@@ -164,6 +164,5 @@ int fputc(int ch, FILE *f)
 {
     USART_SendData(DEBUG_USARTx, (uint8_t) ch);
     while (USART_GetFlagStatus(DEBUG_USARTx, USART_FLAG_TXE) == RESET);		
-
     return (ch);
 }
